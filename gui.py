@@ -1,4 +1,4 @@
-import solver
+import csp as solver
 from tkinter import *
 import copy
 MARGIN = 20  # Pixels around the board
@@ -50,7 +50,7 @@ def cell_clicked(event):
     global row
     global col
     x, y = event.x, event.y
-    print (x,y)
+    #print (x,y)
     if (MARGIN < x < WIDTH - MARGIN and MARGIN < y < HEIGHT - MARGIN):
         canvas.focus_set()
         row, col = (y - MARGIN) // SIDE, (x - MARGIN) // SIDE
@@ -66,8 +66,10 @@ def key_pressed(event):
         draw_cursor()
 
 def clear():
+    global puzzle
+    global start_puzzle
     puzzle=[[0 for i in range(9)] for j in range(9)]
-    start_puzzle=[]
+    start_puzzle=[[0 for i in range(9)] for j in range(9)]
     canvas.delete("numbers")
 
 def solve():
