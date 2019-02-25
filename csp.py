@@ -38,6 +38,20 @@ def reduceBoxes(row, col):
             except:
                 pass
 
+def invalid(puzz):
+    for i in range(9):
+        for j in range(9):
+            if(puzz[i][j]!=0):
+                for k in range(9):
+                    if(k!=i and puzz[k][j]==puzz[i][j]):
+                        return True
+                    if(k!=j and puzz[i][k]==puzz[i][j]):
+                        return True
+                for p in range(i//3, i//3+3):
+                    for q in range(j//3, j//3+3):
+                        if(p!=i and q!=j and puzz[i][j]==puzz[p][q]):
+                            return True
+
 def reduceDomain(puzzle):
     global domain
     global changed
@@ -63,6 +77,9 @@ def reduceDomain(puzzle):
 
 def solveSudoku(puzzle):
     global domain
+    if invalid(puzzle):
+        print("Invalid Puzzle")
+        return puzzle
     #print(puzzle)
     domain = [[list(range(1,10)) for i in range(9)] for j in range(9)]
     reduceDomain(puzzle)
