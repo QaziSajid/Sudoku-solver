@@ -1,10 +1,13 @@
 import csp as solver
 from tkinter import *
 import copy
+import sys
 MARGIN = 20  # Pixels around the board
 SIDE = 50  # Width of every board cell.
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9  # Width and height of the whole board
-
+darktheme = {"3x3":"deep sky blue", "9x9":"steel blue", "solved":"gainsboro", "initial":"spring green"}
+litetheme = {"3x3":"brown4", "9x9":"orange", "solved":"dark slate gray", "initial":"forest green"}
+theme = {}
 row = -1
 col = -1
 puzzle=[[0 for i in range(9)] for j in range(9)]
@@ -12,7 +15,7 @@ start_puzzle=copy.deepcopy(puzzle)
     
 def draw_grid():
     for i in range(10):
-        color = "cyan2" if i % 3 == 0 else "blue"
+        color = theme["3x3"] if i % 3 == 0 else theme["9x9"]
         x0 = MARGIN + i * SIDE
         y0 = MARGIN
         x1 = MARGIN + i * SIDE
@@ -34,7 +37,7 @@ def update_puzzle():
                 x = MARGIN + j * SIDE + SIDE / 2
                 y = MARGIN + i * SIDE + SIDE / 2
                 original = start_puzzle[i][j]
-                color = "snow" if value != original else "yellow"
+                color = theme["solved"] if value != original else theme["initial"]
                 canvas.create_text(x, y, font=("Helvetica", 16), text=value, tags="numbers", fill=color)
 
 def draw_cursor():
@@ -79,8 +82,16 @@ def solve():
     puzzle = solver.solveSudoku(puzzle)
     update_puzzle()
 
+try:
+    if(sys.argv[1]=='light'):
+        theme = litetheme
+    else:
+        theme = darktheme
+except:
+    theme = darktheme
 root = Tk()
 root.title("Sudoku")
+#root.configure(background = theme["background"])
 #Frame.init(root)
 row, col = -1, -1
 #root.pack(fill=BOTH)

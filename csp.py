@@ -7,8 +7,8 @@ def reduceRows(row, col):
     e = domain[row][col][0]
     for i in range(9):
         try:
-            if(len(domain[row][i])>1):
-                (domain[row][i].remove(e))
+            if(i!=col):
+                domain[row][i].remove(e)
                 changed = True
         except:
             pass
@@ -19,8 +19,8 @@ def reduceColumns(row, col):
     e = domain[row][col][0]
     for i in range(9):
         try:
-            if(len(domain[i][col])>1):
-                (domain[i][col].remove(e))
+            if(i!=row):
+                domain[i][col].remove(e)
                 changed = True
         except:
             pass
@@ -32,8 +32,8 @@ def reduceBoxes(row, col):
     for i in range((row//3)*3, (row//3)*3+3):
         for j in range((col//3)*3, (col//3)*3+3):
             try:
-                if(len(domain[i][j])>1):
-                    (domain[i][j].remove(e))
+                if(not(i==row and j==col)):
+                    domain[i][j].remove(e)
                     changed = True
             except:
                 pass
@@ -44,12 +44,16 @@ def invalid(puzz):
             if(puzz[i][j]!=0):
                 for k in range(9):
                     if(k!=i and puzz[k][j]==puzz[i][j]):
+                        print("col conflict at ", k,j, "and", i,j)
                         return True
                     if(k!=j and puzz[i][k]==puzz[i][j]):
+                        print("row conflict at ", k,j, "and", i,j)
                         return True
-                for p in range(i//3, i//3+3):
-                    for q in range(j//3, j//3+3):
+                #print(i, j, i//3, i//3+3, j//3, j//3+3)
+                for p in range(i//3*3, i//3*3+3):
+                    for q in range(j//3*3, j//3*3+3):
                         if(p!=i and q!=j and puzz[i][j]==puzz[p][q]):
+                            print("box conflict at ", p,q, "and", i,j)
                             return True
 
 def reduceDomain(puzzle):
@@ -80,8 +84,12 @@ def solveSudoku(puzzle):
     if invalid(puzzle):
         print("Invalid Puzzle")
         return puzzle
-    #print(puzzle)
     domain = [[list(range(1,10)) for i in range(9)] for j in range(9)]
     reduceDomain(puzzle)
+    #print (domain)
+    for i in range(9):
+        if [] in domain[i]:
+            print("Invalid Puzzle, blank domain")
+            return puzzle
     solution = bt.solve(domain)
     return solution
